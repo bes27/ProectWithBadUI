@@ -1,28 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CoinSpawner : MonoBehaviour
 {
-    const int _minCountBigCoins = 40;
-    const int _minCountSmallCoins = 40;
+    const int minCountBigCoins = 40;
+    const int minCountSmallCoins = 40;
     
-    [SerializeField] private GameObject _bigCoin;
-    [SerializeField] private Transform _bigCoinTransform;
-    [SerializeField] private GameObject _smallCoin;
-    [SerializeField] private Transform _smallCoinTransform;
-    
-    [SerializeField][Range(80, 150)] private int _maxCountAllCoins;
+    [SerializeField] private GameObject bigCoin;
+    [SerializeField] private Transform bigCoinTransform;
+    [SerializeField] private GameObject smallCoin;
+    [SerializeField] private Transform smallCoinTransform;
+
+    [SerializeField] private GameObject barriers;
+    [SerializeField] private Transform barriersTransform;
+
+    [SerializeField][Range(80, 150)] private int maxCountAllCoins;
     [SerializeField][Range(100, 300)] private int distance;
-    [SerializeField][Range(4.0f, 6.0f)] private float _distanceBetweenCoins;
-    [SerializeField][Range(1.5f, 3.5f)] private float _distanceToBarriers;
-    
-    private int _maxCountBigCoins;
-    private int _maxCountSmallCoins;
-    private Vector3 _spawnPoint;
-    private int _counterSpawnedCoins = 0;
+    [SerializeField][Range(4.0f, 6.0f)] private float distanceBetweenCoins;
+    [SerializeField][Range(1.5f, 3.5f)] private float distanceToBarriers;
+
+    [SerializeField][Range(150, 1000)] private int maxCountAllBarriers;
+    [SerializeField][Range(1.5f, 3.5f)] private float distanceToCoin;
+    [SerializeField][Range(1f, 3f)] private float distanceBetweenBarriers;
+
+    private int maxCountBigCoins;
+    private Vector3 spawnPoint;
+    private int counterSpawnedCoins = 0;
+
+    private void Awake()
+    {
+        SpawnBarriers();
+    }
 
     void Start()
     {
@@ -30,21 +37,17 @@ public class CoinSpawner : MonoBehaviour
 
         SpawnCoins();
     }
-
+    //считаем кол-во кристалов
     private void CounterMaxCoins()
     {
-        _maxCountBigCoins = _maxCountAllCoins - (_minCountBigCoins +
-                                                     (_maxCountAllCoins > 80 
-                                                     ? Random.Range(0, _maxCountAllCoins - (_minCountBigCoins + _minCountSmallCoins)) 
-                                                     : 0
-                                                     )
-                                                 );
-        _maxCountSmallCoins = _maxCountAllCoins - _maxCountBigCoins;
-    }
+        int condition = Random.Range(0, maxCountAllCoins - (minCountBigCoins + minCountSmallCoins));
 
+        maxCountBigCoins = maxCountAllCoins - (minCountBigCoins +(maxCountAllCoins > 80 ? condition: 0));
+    }
+    //спавним через цикл
     private void SpawnCoins()
     {
-        for (int _countCoins = 1; _countCoins <= _maxCountAllCoins; _countCoins++)
+        for (int countCoins = 1; countCoins <= maxCountAllCoins; countCoins++)
         {
             SpawnOneCoin();
         }
@@ -52,42 +55,75 @@ public class CoinSpawner : MonoBehaviour
 
     private void SpawnOneCoin()
     {
-        if (_counterSpawnedCoins <= _maxCountBigCoins)
+        if (counterSpawnedCoins <= maxCountBigCoins)
         {
             Instantiate(
-                _bigCoin, 
-                ApproveDistance(_distanceBetweenCoins, _distanceToBarriers), 
+                bigCoin, 
+                ApproveDistance(distanceBetweenCoins, distanceToBarriers), 
                 Quaternion.identity, 
-                _bigCoinTransform);
+                bigCoinTransform);
             
-            _counterSpawnedCoins += 1;
+            counterSpawnedCoins += 1;
         }
-        else if (_counterSpawnedCoins <= _maxCountAllCoins)
+        else if (counterSpawnedCoins <= maxCountAllCoins)
         {
             Instantiate(
-                _smallCoin, 
-                ApproveDistance(_distanceBetweenCoins, _distanceToBarriers), 
+                smallCoin, 
+                ApproveDistance(distanceBetweenCoins, distanceToBarriers), 
                 Quaternion.identity, 
-                _smallCoinTransform);
+                smallCoinTransform);
             
-            _counterSpawnedCoins += 1;
+            counterSpawnedCoins += 1;
         }
     }
-
+    // дополняем вектор для уверенности
     private Vector3 ApproveDistance(float distanceCoins, float distanceBarriers)
     {
-        _spawnPoint = Random.insideUnitCircle * distance;
+        spawnPoint = Random.insideUnitCircle * distance;
 
         for (int i = 0; i < 5; i++)
         {
-            if (Physics2D.OverlapCircle(_spawnPoint, distanceCoins) != null 
-                || Physics2D.OverlapCircle(_spawnPoint, distanceBarriers) != null)
+            if (Physics2D.OverlapCircle(spawnPoint, distanceCoins) != null 
+                || Physics2D.OverlapCircle(spawnPoint, distanceBarriers) != null)
             {
-                _spawnPoint = Random.insideUnitCircle * distance;
+                spawnPoint = Random.insideUnitCircle * distance;
                 i = 0;
             }
         }
 
-        return _spawnPoint;
+        return spawnPoint;
+    }
+
+    private void SpawnBarriers()
+    {
+        for (int countBarriers = 1; countBarriers <= maxCountAllBarriers; countBarriers++)
+        {
+            SpawnOneBarriers();
+        }
+    }
+
+    private void SpawnOneBarriers()
+    {
+        Instantiate(
+                     barriers,
+                     ApproveDistance(distanceBetweenBarriers),
+                     Quaternion.identity,
+                     barriersTransform);
+    }
+
+    private Vector3 ApproveDistance(float distanceBarriers)
+    {
+        spawnPoint = Random.insideUnitCircle * distance;
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (Physics2D.OverlapCircle(spawnPoint, distanceBarriers) != null)
+            {
+                spawnPoint = Random.insideUnitCircle * distance;
+                i = 0;
+            }
+        }
+
+        return spawnPoint;
     }
 }

@@ -73,7 +73,7 @@ public class Player : MonoBehaviour
             {
                 transform.Translate(_positionVertical);
             }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             {
                 transform.Translate(_positionHorizontal);
                 _playerRenderer.flipX = false;

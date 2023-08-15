@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8523289791822715406}
   - component: {fileID: 1147363943210097468}
   - component: {fileID: 1609913247233575232}
-  - component: {fileID: 8974426131308258122}
+  - component: {fileID: 2521763495881824142}
   m_Layer: 0
   m_Name: BigCoin
   m_TagString: BigCoin
@@ -92,7 +92,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 2.3
---- !u!114 &8974426131308258122
+--- !u!114 &2521763495881824142
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 652136626444494218}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccef02f763abc4141b54b9b1696c6077, type: 3}
+  m_Script: {fileID: 11500000, guid: aab905598903bf747bb57aafbd655ebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3913175644494768086

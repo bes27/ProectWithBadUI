@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SmallCoin : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.CompareTag("Player"))
+        if(collision != null)
         {
-            ScoreManager.Instance.AddScore(1);
-            Destroy(gameObject);
+            if (collision.CompareTag("Player"))
+            {
+                ScoreManager.Instance.AddScore(1);
+                Destroy(gameObject);
+            }
         }
     }
 }

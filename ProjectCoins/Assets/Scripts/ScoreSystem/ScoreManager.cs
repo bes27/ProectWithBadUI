@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 
@@ -20,36 +19,36 @@ public class ScoreManager : MonoBehaviour
         _counterScore = 0;
 
         _scoreTimer.text = _scoreTimer.ToString();
+
     }
 
     private void Update()
     {
         Timer();
 
-        if (timeMax < 0)
+        if (isTakeIt || timeMax <= 0)
         {
             timeMax = 3;
-
         }
     }
-
+    //таймер
     private void Timer()
     {
         if (isTiming)
         {
             timeMax -= Time.deltaTime;
             _scoreTimer.text = Mathf.Round(timeMax).ToString();
-            if(Time.deltaTime <= 0)
+            if (Time.deltaTime <= 0)
                 isTiming = false;
-            if(Time.deltaTime <= timeMax)
+            if (timeMax < 3)
                 isTakeIt = false;
         }
     }
-
+    // добавление очков за кристалы
     public void AddScore(int countAdd)
     {
-        this._counterScore += countAdd;
-        _scoreText.text = this._counterScore.ToString();
+        _counterScore += countAdd;
+        _scoreText.text = _counterScore.ToString();
         isTiming = true;
         isTakeIt = true;
         EnableScore();
@@ -58,8 +57,8 @@ public class ScoreManager : MonoBehaviour
 
     private void ClearScore()
     {
-        this._counterScore = 0;
-        _scoreText.text = this._counterScore.ToString();
+        _counterScore = 0;
+        _scoreText.text = _counterScore.ToString();
     }
 
     private void EnableScore()
@@ -77,9 +76,7 @@ public class ScoreManager : MonoBehaviour
 
     private void TimerScore()
     {
-        
-            CancelInvoke();
-            Invoke("DisableScore", 3);
-        
+        CancelInvoke();
+        Invoke("DisableScore", 3);
     }
 }
